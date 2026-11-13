@@ -1,0 +1,34 @@
+.student-records {
+  padding: 2rem;
+}
+
+.student-records h1 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.records-table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.records-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.records-table th,
+.records-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.records-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+.student-records{padding:36px 52px 70px}.records-heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:22px}.records-heading h1{margin:0 0 8px;color:#172a4a;font-size:28px}.data-source{font-size:11px;color:#21825f;background:#e6f8ef;padding:8px 11px;border-radius:20px}.records-card{background:#fff;border:1px solid #e7ebf2;border-radius:9px;margin-bottom:18px;padding:22px}.record-summary{display:flex;gap:32px;align-items:center;border-bottom:1px solid #edf0f4;padding-bottom:18px;margin-bottom:15px}.record-summary>div:first-child{flex:1}.record-summary h2{font-size:16px;color:#1b2e4c;margin:0 0 5px}.record-summary span{font-size:11px;color:#8997aa}.gpa-block small,.gpa-block strong{display:block}.gpa-block small{font-size:9px;color:#9ba7b8;letter-spacing:1px}.gpa-block strong{font-size:20px;color:#246de0;margin-top:4px}.table-wrap{overflow-x:auto}.records-card table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}.records-card th{text-align:left;color:#98a5b7;font-size:9px;letter-spacing:.8px;padding:12px 10px;border-bottom:1px solid #edf0f4}.records-card td{padding:13px 10px;border-bottom:1px solid #f0f2f6;color:#53617a}.grade-badge{background:#e6f8ef;color:#19855d;border-radius:4px;padding:4px 8px;font-weight:700}.result-entry h2{font-size:16px;color:#1b2e4c;margin:0 0 18px}.result-form,.account-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.result-form label,.account-form label{display:block;color:#52617a;font-size:11px;font-weight:600}.result-form input,.result-form select,.account-form input,.account-form select{width:100%;height:40px;border:1px solid #dbe3ee;border-radius:6px;padding:0 10px;margin-top:6px;background:white;color:#273a58}.result-form button,.account-form button,.profile button{border:0;border-radius:6px;background:#246de0;color:#fff;padding:11px 15px;cursor:pointer}.records-message{font-size:12px;color:#187c58}.empty-state{padding:22px;color:#8997aa;font-size:13px}.records-card .form-error{margin:10px 0}@media(max-width:850px){.student-records{padding:28px 20px}.result-form,.account-form{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){.records-heading{display:block}.data-source{display:inline-block;margin-top:15px}.record-summary{gap:12px;flex-wrap:wrap}.record-summary>div:first-child{flex-basis:100%}.result-form,.account-form{grid-template-columns:1fr}}

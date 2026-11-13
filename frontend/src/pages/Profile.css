@@ -1,0 +1,31 @@
+.profile {
+  padding: 2rem;
+}
+
+.profile h1 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.profile-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-details p {
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+.catalog-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 18px}.catalog-tabs button{background:#f3f6fb;border:1px solid #e0e7f1;border-radius:8px;color:#566984;padding:10px 14px;font-size:12px;font-weight:600;cursor:pointer;min-height:42px}.catalog-tabs button.active{background:#e9f1ff;border-color:#b8cff5;color:#1f60c6}.admin-view-tabs{margin-bottom:22px}.catalog-title h2{font-size:19px!important;margin:0 0 6px!important}.catalog-title .muted{margin-bottom:16px}.catalog-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}.catalog-form label{margin:0!important}.catalog-form button{align-self:end;min-height:42px}.catalog-form .secondary-button{background:#f2f5fa;color:#354967}.catalog-message{color:#16794f;background:#eaf8f1;border-radius:8px;padding:10px 12px;font-size:12px}.catalog-subtext{display:block;color:#7a899f;font-size:11px;margin-top:3px}.academic-catalog .profile-card{padding:24px}.academic-catalog table{min-width:760px}.academic-catalog th,.academic-catalog td{white-space:nowrap}.academic-catalog td:nth-child(2){white-space:normal;min-width:180px}.academic-catalog .small-action{margin:2px}
+.profile{padding:36px 52px 70px}.profile-card{background:#fff;border:1px solid #e7ebf2;border-radius:9px;padding:22px;margin-bottom:18px}.profile-card h2{font-size:16px;color:#1b2e4c;margin:0 0 18px}.profile-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 28px}.profile-details p{font-size:12px;color:#697991;padding:12px 0;border-bottom:1px solid #edf0f4}.profile-details strong{color:#344660}.profile.admin-users{max-width:1260px;margin:auto}.small-action{padding:8px 10px!important;font-size:11px}.admin-users .table-wrap{overflow-x:auto}@media(max-width:850px){.profile{padding:28px 20px}}@media(max-width:540px){.profile-details{grid-template-columns:1fr}}
+
+/* Catalogue and account management polish */
+.profile.admin-users{padding-top:40px}.admin-users>.page-heading{margin-bottom:22px}.admin-view-tabs{border-bottom:1px solid #e1e8f2;padding-bottom:12px;gap:9px}
+.catalog-tabs button{min-height:44px;padding:9px 12px;transition:background .16s,border-color .16s,color .16s}.catalog-tabs button:hover{background:#edf4ff;border-color:#c9daf4}.catalog-tabs button.active{box-shadow:inset 0 -2px #2868d7}.catalog-tabs button span{display:inline-grid;place-items:center;min-width:21px;height:21px;margin-left:8px;border-radius:20px;background:#fff;color:#55708f;font-size:10px}
+.academic-catalog .profile-card,.admin-users>.profile-card{border-radius:13px;box-shadow:0 5px 18px #15335b08;padding:24px}.catalog-list-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:12px}.catalog-list-heading h2{margin-bottom:4px}.catalog-list-heading .muted{font-size:11px}.catalog-search{display:grid;gap:5px;width:min(310px,100%);color:#5c6f89;font-size:10px;font-weight:600}.catalog-search input{height:42px;padding:0 12px;border:1px solid #dce5f0;border-radius:9px;background:#fbfcfe;color:#253b5c;font-size:12px}.catalog-search input::placeholder{color:#96a4b6}
+.academic-catalog table,.admin-users table{border-collapse:separate;border-spacing:0;font-size:12px}.academic-catalog th,.admin-users th{position:sticky;top:0;background:#f7f9fc;color:#77869a;padding:12px 10px;border-bottom:1px solid #e6ebf2;font-size:10px;letter-spacing:.6px}.academic-catalog td,.admin-users td{padding:12px 10px;border-bottom:1px solid #edf1f6;color:#40536f}.academic-catalog tbody tr:hover,.admin-users tbody tr:hover{background:#f8faff}.course-code{display:inline-block;padding:4px 7px;border-radius:6px;background:#edf4ff;color:#255cae;font-weight:700;font-size:11px}.catalog-status{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:4px 8px;font-size:10px;font-weight:650;white-space:nowrap}.catalog-status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}.catalog-status.is-active{background:#e9f7f0;color:#177a51}.catalog-status.is-inactive{background:#f0f2f5;color:#68778b}
+.academic-catalog .small-action,.admin-users .small-action{min-height:36px;border-radius:7px!important;padding:7px 10px!important;font-size:11px!important}.academic-catalog .small-action:not(:first-child){background:#eef2f7;color:#485c78}.academic-catalog .small-action:not(:first-child):hover{background:#e3eaf3}.academic-catalog .catalog-form{padding:18px;border:1px solid #e8edf5;border-radius:11px;background:#f9fbfe}.academic-catalog .catalog-form input,.academic-catalog .catalog-form select,.admin-users .account-form input,.admin-users .account-form select{height:44px;border-radius:8px;background:#fff;font-size:13px}.academic-catalog .catalog-form label,.admin-users .account-form label{font-size:11px;color:#405571}.academic-catalog .catalog-form button,.admin-users .account-form button{min-height:44px;border-radius:8px;font-weight:650}.admin-users>.profile-card>form{display:flex;align-items:end;gap:10px;margin-bottom:16px}.admin-users>.profile-card>form label{display:grid;gap:5px;max-width:360px;flex:1;font-size:11px;font-weight:600;color:#536781}.admin-users>.profile-card>form input{height:42px;border:1px solid #dbe4ef;border-radius:8px;padding:0 12px}.admin-users>.profile-card>form button{height:42px;min-width:92px;border-radius:8px;font-weight:650}
+@media(max-width:700px){.profile.admin-users{padding:26px 16px 48px}.catalog-list-heading{align-items:stretch;flex-direction:column}.catalog-search{width:100%}.academic-catalog .profile-card,.admin-users>.profile-card{padding:17px}.catalog-form{grid-template-columns:1fr}.admin-users>.profile-card>form{align-items:stretch;flex-direction:column}.admin-users>.profile-card>form label{max-width:none}.admin-users>.profile-card>form button{width:100%}}
+@media(prefers-reduced-motion:reduce){.catalog-tabs button{transition:none}}
