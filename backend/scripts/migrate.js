@@ -121,16 +121,21 @@ const runMigrations = async () => {
   });
 
   console.log('Seeding default admin user...');
+  const adminLoginId = process.env.ADMIN_LOGIN_ID || 'admin';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@your-domain.com';
+  const adminDisplayName = process.env.ADMIN_DISPLAY_NAME || 'System Administrator';
+
   const adminExists = await new Promise((resolve, reject) => {
-    db.get('SELECT id FROM users WHERE login_id = ?', ['admin'], (err, row) => err ? reject(err) : resolve(!!row));
+    db.get('SELECT id FROM users WHERE login_id = ?', [adminLoginId], (err, row) => err ? reject(err) : resolve(!!row));
   });
 
   if (!adminExists) {
-    const hashed = await bcrypt.hash('Admin@123', 10);
+    const hashed = await bcrypt.hash(adminPassword, 10);
     await new Promise((resolve, reject) => {
-      db.run('INSERT INTO users (login_id, email, password_hash, role, display_name, status) VALUES (?, ?, ?, ?, ?, ?)', ['admin', 'admin@portal.local', hashed, 'admin', 'System Administrator', 'active'], function(err) { err ? reject(err) : resolve(); });
+      db.run('INSERT INTO users (login_id, email, password_hash, role, display_name, status) VALUES (?, ?, ?, ?, ?, ?)', [adminLoginId, adminEmail, hashed, 'admin', adminDisplayName, 'active'], function(err) { err ? reject(err) : resolve(); });
     });
-    console.log('Default admin created: login=admin, password=Admin@123');
+    console.log(`Default admin created: login=${adminLoginId}, password=${adminPassword}`);
   }
 
   console.log('Seeding default departments...');
