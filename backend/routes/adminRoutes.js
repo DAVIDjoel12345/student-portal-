@@ -2,6 +2,8 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { get, run, all } = require('../config/db');
 const { authenticateToken, requireRole } = require('../middleware/auth');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const router = express.Router();
 
@@ -45,7 +47,30 @@ router.post('/users', authenticateToken, requireRole('admin'), [body('loginId').
     const hashed = await bcrypt.hash(password, 10);
     const result = await run('INSERT INTO users (login_id,email,password_hash,role,display_name,program,department,status) VALUES(?,?,?,?,?,?,?,\'active\') RETURNING id', [loginId.trim(), email, hashed, role, displayName || loginId.trim(), program || null, department || null]);
     await run('INSERT INTO audit_logs(user_id,action,resource_type,resource_id,ip_address) VALUES(?,?,?,?,?)', [req.user.id, 'USER_CREATED', 'user', result.lastID, req.ip]);
-    res.status(201).json({ message: 'User created successfully', userId: result.lastID });
+    const otp = String(crypto.randomInt(100000, 1000000));
+    const otpExpires = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+    await run("UPDATE users SET otp_hash=?, otp_expires_at=?, otp_attempts=0 WHERE id=?", [hashOtp(otp), otpExpires, result.lastID]);
+    if (process.env.NODE_ENV === 'production') {
+      if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
+        return res.status(503).json({ error: 'Email verification is not configured' });
+      }
+      const nodemailer = await import('nodemailer');
+      const implicitTls = process.env.SMTP_SECURE === 'true';
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT || 587),
+        secure: implicitTls,
+        requireTLS: !implicitTls,
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD }
+      });
+      await transporter.sendMail({
+        from: process.env.SMTP_FROM,
+        to: email,
+        subject: 'Your academic portal verification code',
+        text: `Your sign-in code is ${otp}. It expires in five minutes.`
+      });
+    } else console.info(`Development OTP for ${email}: ${otp}`);
+    res.status(201).json({ message: 'User created successfully. A verification code was sent to the email.', userId: result.lastID, mfaRequired: true });
   } catch (error) { console.error(error); res.status(500).json({ error: 'Unable to create user' }); }
 });
 
@@ -195,11 +220,3 @@ router.get('/my-activity', authenticateToken, requireRole('admin'), async (req, 
 });
 
 module.exports = router;
-
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-
-function hashOtp(value) {
-  return crypto.createHmac('sha256', process.env.JWT_SECRET).update(value).digest('hex');
-}
