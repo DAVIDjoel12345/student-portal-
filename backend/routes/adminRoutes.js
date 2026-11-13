@@ -4,6 +4,8 @@ const { get, run, all } = require('../config/db');
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const { BrevoClient } = require('@getbrevo/brevo');
+const brevoClient = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
 
 const router = express.Router();
 
@@ -51,23 +53,14 @@ router.post('/users', authenticateToken, requireRole('admin'), [body('loginId').
     const otpExpires = new Date(Date.now() + 5 * 60 * 1000).toISOString();
     await run("UPDATE users SET otp_hash=?, otp_expires_at=?, otp_attempts=0 WHERE id=?", [hashOtp(otp), otpExpires, result.lastID]);
     if (process.env.NODE_ENV === 'production') {
-      if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
+      if (!process.env.BREVO_API_KEY || !process.env.BREVO_FROM_EMAIL) {
         return res.status(503).json({ error: 'Email verification is not configured' });
       }
-      const nodemailer = await import('nodemailer');
-      const implicitTls = process.env.SMTP_SECURE === 'true';
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT || 587),
-        secure: implicitTls,
-        requireTLS: !implicitTls,
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD }
-      });
-      await transporter.sendMail({
-        from: process.env.SMTP_FROM,
-        to: email,
+      await brevoClient.transactionalEmails.sendTransacEmail({
+        sender: { name: process.env.BREVO_FROM_NAME || 'Academic Record Portal', email: process.env.BREVO_FROM_EMAIL },
+        to: [{ email }],
         subject: 'Your academic portal verification code',
-        text: `Your sign-in code is ${otp}. It expires in five minutes.`
+        textContent: `Your sign-in code is ${otp}. It expires in five minutes.`
       });
     } else console.info(`Development OTP for ${email}: ${otp}`);
     res.status(201).json({ message: 'User created successfully. A verification code was sent to the email.', userId: result.lastID, mfaRequired: true });
@@ -158,11 +151,13 @@ router.post('/reauth/start', authenticateToken, requireRole('admin'), [body('pas
     const otpExpires = new Date(Date.now() + 5 * 60 * 1000).toISOString();
     await run("UPDATE users SET otp_hash=?, otp_expires_at=? WHERE id=?", [hashOtp(otp), otpExpires, req.user.id]);
     if (process.env.NODE_ENV === 'production') {
-      if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) return res.status(503).json({ error: 'Email verification is not configured' });
-      const nodemailer = await import('nodemailer');
-      const implicitTls = process.env.SMTP_SECURE === 'true';
-      const transporter = nodemailer.createTransport({ host: process.env.SMTP_HOST, port: Number(process.env.SMTP_PORT || 587), secure: implicitTls, requireTLS: !implicitTls, auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD } });
-      await transporter.sendMail({ from: process.env.SMTP_FROM, to: user.email, subject: 'Your academic portal verification code', text: `Your sign-in code is ${otp}. It expires in five minutes.` });
+      if (!process.env.BREVO_API_KEY || !process.env.BREVO_FROM_EMAIL) return res.status(503).json({ error: 'Email verification is not configured' });
+      await brevoClient.transactionalEmails.sendTransacEmail({
+        sender: { name: process.env.BREVO_FROM_NAME || 'Academic Record Portal', email: process.env.BREVO_FROM_EMAIL },
+        to: [{ email: user.email }],
+        subject: 'Your academic portal verification code',
+        textContent: `Your sign-in code is ${otp}. It expires in five minutes.`
+      });
     } else console.info(`Development OTP for ${req.user.loginId}: ${otp}`);
     res.json({ message: 'Verification code sent to your email' });
   } catch (error) { console.error('Reauth start error:', error.message); res.status(500).json({ error: 'Unable to start reauthentication' }); }

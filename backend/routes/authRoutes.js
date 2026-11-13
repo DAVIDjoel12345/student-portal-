@@ -8,28 +8,22 @@ const { get, run } = require('../config/db');
 const router = express.Router();
 const hashOtp = (value) => crypto.createHmac('sha256', process.env.JWT_SECRET).update(value).digest('hex');
 
+const { BrevoClient } = require('@getbrevo/brevo');
+const brevoClient = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
+
 const sendOtpEmail = async (email, otp, isProduction) => {
   if (!isProduction) {
     console.info(`Development OTP for ${email}: ${otp}`);
     return;
   }
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
-    throw new Error('Email verification is not configured');
+  if (!process.env.BREVO_API_KEY || !process.env.BREVO_FROM_EMAIL) {
+    throw new Error('Brevo email is not configured');
   }
-  const nodemailer = await import('nodemailer');
-  const implicitTls = process.env.SMTP_SECURE === 'true';
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: implicitTls,
-    requireTLS: !implicitTls,
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD }
-  });
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM,
-    to: email,
+  await brevoClient.transactionalEmails.sendTransacEmail({
+    sender: { name: process.env.BREVO_FROM_NAME || 'Academic Record Portal', email: process.env.BREVO_FROM_EMAIL },
+    to: [{ email }],
     subject: 'Your academic portal verification code',
-    text: `Your sign-in code is ${otp}. It expires in five minutes.`
+    textContent: `Your sign-in code is ${otp}. It expires in five minutes.`
   });
 };
 
