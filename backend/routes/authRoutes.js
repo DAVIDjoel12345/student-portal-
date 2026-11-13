@@ -12,12 +12,13 @@ const { BrevoClient } = require('@getbrevo/brevo');
 const brevoClient = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
 
 const sendOtpEmail = async (email, otp, isProduction) => {
-  if (!isProduction) {
+  const isConfigured = process.env.BREVO_API_KEY && !process.env.BREVO_API_KEY.includes('your-brevo-api-key') && process.env.BREVO_FROM_EMAIL && !process.env.BREVO_FROM_EMAIL.includes('your-verified-sender');
+  if (!isProduction || !isConfigured) {
     console.info(`Development OTP for ${email}: ${otp}`);
+    if (isProduction && !isConfigured) {
+      console.warn('Brevo email is not configured; OTP logged to console instead.');
+    }
     return;
-  }
-  if (!process.env.BREVO_API_KEY || !process.env.BREVO_FROM_EMAIL) {
-    throw new Error('Brevo email is not configured');
   }
   await brevoClient.transactionalEmails.sendTransacEmail({
     sender: { name: process.env.BREVO_FROM_NAME || 'Academic Record Portal', email: process.env.BREVO_FROM_EMAIL },
@@ -37,14 +38,11 @@ router.post('/login', [body('loginId').trim().notEmpty().isLength({ max: 100 }),
       return res.status(401).json({ error: 'Invalid credentials or temporarily locked account' });
     }
     const isAdmin = user.role === 'admin';
-    if (isAdmin) {
-      const token = jwt.sign({ id: user.id, role: user.role, loginId: user.login_id, version: user.token_version || 0 }, process.env.JWT_SECRET, { expiresIn: '2h', issuer: 'academic-record-portal', audience: 'academic-record-portal-client' });
-      return res.json({ token, user: { id: user.id, loginId: user.login_id, role: user.role, displayName: user.display_name }, mfaRequired: false });
-    }
     const otp = String(crypto.randomInt(100000, 1000000));
     const otpExpires = new Date(Date.now() + 5 * 60 * 1000).toISOString();
     await run("UPDATE users SET otp_hash=?, otp_expires_at=?, otp_attempts=0 WHERE id=?", [hashOtp(otp), otpExpires, user.id]);
-    await sendOtpEmail(user.email, otp, process.env.NODE_ENV === 'production');
+    const otpEmail = isAdmin ? process.env.ADMIN_EMAIL : user.email;
+    await sendOtpEmail(otpEmail, otp, process.env.NODE_ENV === 'production');
     res.json({ mfaRequired: true, userId: user.id, message: 'A verification code was sent to your registered email.' });
   } catch (error) { console.error('Login error:', error.message); res.status(500).json({ error: 'Unable to start sign in' }); }
 });
